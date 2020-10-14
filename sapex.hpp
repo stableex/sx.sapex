@@ -11,14 +11,14 @@ namespace sapex {
     /**
      * SAPEX markets
      */
-    struct [[eosio::table]] markets_row {
+    struct [[eosio::table]] sapextbl_row {
         symbol_code            ticker;
         name                   contract;
-        uint64_t               reserve_token;
-        uint64_t               reserve_sapex;
+        uint64_t               token;
+        uint64_t               sapex;
         uint64_t primary_key() const { return ticker.raw(); }
     };
-    typedef eosio::multi_index< "markets"_n, markets_row > markets;
+    typedef eosio::multi_index< "sapextbl"_n, sapextbl_row > sapextbl;
 
     /**
      * ## STATIC `get_fee`
@@ -58,19 +58,20 @@ namespace sapex {
      */
     static std::pair<asset, asset> get_reserves( symbol sym1, symbol sym2)
     {
+        check(sym1!=sym2, "SAPEXLibrary: INVALID_PAIR");
         // table
-        sapex::markets _markets( "sapexamm.eo"_n, "sapexamm.eo"_n.value );
-        if(sym1.code().to_string()=="SAPEX"){
+        sapex::sapextbl _markets( "sapexamm.eo"_n, "sapexamm.eo"_n.value );
+        if(sym1.code().to_string()=="SAPEX"){   //SAPEX->XXX
             auto row = _markets.get( sym2.code().raw(), "SAPEXLibrary: INVALID_SYMBOL" );
-            return { { (int64_t)row.reserve_sapex,sym1 }, { (int64_t)row.reserve_token, sym2 } };
+            return { { (int64_t)row.sapex,sym1 }, { (int64_t)row.token, sym2 } };
         }
-        if(sym2.code().to_string()=="SAPEX"){
+        if(sym2.code().to_string()=="SAPEX"){   //XXX->SAPEX
             auto row = _markets.get( sym1.code().raw(), "SAPEXLibrary: INVALID_SYMBOL" );
-            return { { (int64_t)row.reserve_token,sym1 }, { (int64_t)row.reserve_sapex, sym2 } };
+            return { { (int64_t)row.token, sym1 }, { (int64_t)row.sapex, sym2 } };
         }
         //neither is SAPEX
         auto row1 = _markets.get( sym1.code().raw(), "SAPEXLibrary: INVALID_SYMBOL" );
         auto row2 = _markets.get( sym2.code().raw(), "SAPEXLibrary: INVALID_SYMBOL" );
-        return { { (int64_t)row1.reserve_token, sym1 }, { (int64_t)row2.reserve_token, sym2 } };
+        return { { (int64_t)row1.token, sym1 }, { (int64_t)row2.token, sym2 } };
     }
 }
