@@ -8,6 +8,10 @@ namespace sapex {
     using eosio::symbol;
     using eosio::name;
 
+    const name id = "sapex"_n;
+    const name code = "sapexamm.eo"_n;
+    const string description = "Sapex Swap Converter";
+
     /**
      * SAPEX markets
      */
