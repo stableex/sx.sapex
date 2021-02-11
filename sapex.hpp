@@ -7,11 +7,13 @@ namespace sapex {
     using eosio::asset;
     using eosio::symbol;
     using eosio::name;
+    using eosio::symbol_code;
+    using eosio::check;
 
     const name id = "sapex"_n;
     const name code = "sapexamm.eo"_n;
-    const string description = "Sapex Swap Converter";
-    const extended_symbol SAPEX { symbol{"SAPEX",4}, "sapexcoin.eo"_n };
+    const std::string description = "Sapex Swap Converter";
+    const eosio::extended_symbol SAPEX { symbol{"SAPEX",4}, "sapexcoin.eo"_n };
 
     /**
      * SAPEX markets
